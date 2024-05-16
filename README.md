@@ -1,6 +1,7 @@
-Data Management Console
+Project README
+
 Overview
-Welcome to the Data Management Console project! This project provides a robust command-line interface (CLI) for creating, managing, and persisting objects. The console offers a powerful storage engine, enabling easy manipulation of objects without worrying about the underlying storage mechanisms.
+Welcome to the Airbnb project! This project provides a robust command-line interface (CLI) for creating, managing, and persisting objects. The console offers a powerful storage engine, enabling easy manipulation of objects without worrying about the underlying storage mechanisms.
 
 Features
 Create Your Data Model: Define and customize your data models to suit your application's needs.
