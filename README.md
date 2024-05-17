@@ -25,8 +25,8 @@ Ensure you have the following installed on your machine:
 1. **Clone the repository**:
 
    ```sh
-   git clone https://github.com/your-username/data-management-console.git
-   cd data-management-console
+   git clone https://github.com/your-username/AirBnB_clone.git
+   cd AirBnB_clone
    ```
 
 2. **Install dependencies**:
