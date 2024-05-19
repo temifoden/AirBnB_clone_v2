@@ -203,14 +203,14 @@ class HBNBCommand(cmd.Cmd):
         # checks if the third argument is a dictionary
         if (attr_name_or_dict.startswith("{") and
             attr_name_or_dict.endswith("}")):
-            try:
-                attr_dict = json.loads(attr_name_or_dict)
-            except json.JSONDecodeError:
-                print("** invalid dictionary format **")
-                return
-            for attr_name, attr_value in attr_dict.items():
-                if isinstance(attr_value, str):
-                    attr_value = attr_value.strip('"')
+                try:
+                    attr_dict = json.loads(attr_name_or_dict)
+                except json.JSONDecodeError:
+                    print("** invalid dictionary format **")
+                    return
+                for attr_name, attr_value in attr_dict.items():
+                    if isinstance(attr_value, str):
+                        attr_value = attr_value.strip('"')
                 setattr(obj, attr_name, attr_value)
         else:
             attr_tokens = attr_name_or_dict.split()
