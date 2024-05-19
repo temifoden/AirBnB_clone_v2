@@ -4,6 +4,7 @@ Defines the HBNBCommand class.
 """
 import cmd
 import re
+import json
 from models.base_model import BaseModel
 from models.user import User
 from models.place import Place
@@ -57,11 +58,20 @@ class HBNBCommand(cmd.Cmd):
                 method_args = method_args.strip('\"')
                 return f"destroy {class_name} {method_args}"
             elif method_name == "update":
-                params = method_args.split(", ")
-                if len(params) == 3:
+                params = method_args.split(", ", 1)
+                if len(params) == 2:
                     instance_id = params[0].strip('\"')
-                    attr_name = params[1].strip('\"')
-                    attr_value = params[2].strip('\"')
+                    attr_name_or_dict = params[1].strip()
+                    if (attr_name_or_dict.startswith("{") and
+                            attr_name_or_dict.endswith("}")):
+                        return (
+                            f"update {class_name} {instance_id} "
+                            f"{attr_name_or_dict}"
+                        )
+                    else:
+                        attr_name, attr_value = attr_name_or_dict(", ")
+                        attr_name = attr_name.strip('\"')
+                        attr_value = attr_value.strip('\"')
                     return (
                         f"update {class_name} {instance_id} "
                         f"{attr_name} {attr_value}"
@@ -167,7 +177,7 @@ class HBNBCommand(cmd.Cmd):
         Usage: update <class name> <id> <attribute name> "<attribute value>"
         or <class name>.update(<id>, <attribute name>, <attribute value>)
         """
-        tokens = args.split()
+        tokens = args.split(" ", 2)
         if not args:
             print("** class name missing **")
             return
@@ -184,22 +194,42 @@ class HBNBCommand(cmd.Cmd):
         if len(tokens) < 3:
             print("** attribute name missing **")
             return
-        if len(tokens) < 4:
-            print("** value missing **")
-            return
+        # if len(tokens) < 4:
+        #     print("** value missing **")
+        #     return
         obj = storage.all()[key]
-        attr_name = tokens[2]
-        attr_value = tokens[3]
+        attr_name_or_dict = tokens[2]
 
-        if attr_value.isdigit():
-            attr_value = int(attr_value)
-        elif (attr_value.replace('.', '', 1).isdigit() and
-              attr_value.count('.') < 2):
-            attr_value = float(attr_value)
+        # checks if the third argument is a dictionary
+        if (attr_name_or_dict.startswith("{") and
+            attr_name_or_dict.endswith("}")):
+            try:
+                attr_dict = json.loads(attr_name_or_dict)
+            except json.JSONDecodeError:
+                print("** invalid dictionary format **")
+                return
+            for attr_name, attr_value in attr_dict.items():
+                if isinstance(attr_value, str):
+                    attr_value = attr_value.strip('"')
+                setattr(obj, attr_name, attr_value)
         else:
-            attr_value = attr_value.strip('"')
+            attr_tokens = attr_name_or_dict.split()
+            if len(attr_tokens) < 2:
+                print("** value missing **")
+                return
+            attr_name = attr_tokens[0]
+            attr_value = attr_tokens[1]
 
-        setattr(obj, attr_name, attr_value)
+            # convert the attribute value to the correct type
+            if attr_value.isdigit():
+                attr_value = int(attr_value)
+            elif (attr_value.replace('.', '', 1).isdigit() and
+                  attr_value.count('.') < 2):
+                attr_value = float(attr_value)
+            else:
+                attr_value = attr_value.strip('"')
+
+            setattr(obj, attr_name, attr_value)
         obj.save()
 
     def emptyline(self):
