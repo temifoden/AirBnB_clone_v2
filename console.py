@@ -3,6 +3,7 @@
 Defines the HBNBCommand class.
 """
 import cmd
+import re
 from models.base_model import BaseModel
 from models.user import User
 from models.place import Place
@@ -28,6 +29,26 @@ class HBNBCommand(cmd.Cmd):
         'Amenity': Amenity,
         'Review': Review
     }
+
+    def parse_method_call(self, args):
+        """
+        Parses method calls in the form of <class name>.<method>(<params>)
+        """
+        match = re.fullmatch(r"(\w+)\.(\w+)\((.*)\)", args)
+        if match:
+            class_name, method_name, method_args = match.groups()
+            return class_name, method_name, method_args
+        return None, None, None
+
+    def precmd(self, line):
+        """
+        Pre-processes the command line input.
+        """
+        class_name, method_name, method_args = self.parse_method_call(line)
+        if class_name and method_name:
+            if method_name == "all":
+                return f"all {class_name}"
+        return line
 
     def do_create(self, args):
         """
