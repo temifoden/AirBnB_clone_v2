@@ -50,6 +50,9 @@ class HBNBCommand(cmd.Cmd):
                 return f"all {class_name}"
             elif method_name == "count":
                 return f"count {class_name}"
+            elif method_name == "show":
+                method_args = method_args.strip('\"')
+                return f"show {class_name} {method_args}"
         return line
 
     def do_create(self, args):
