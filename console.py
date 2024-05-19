@@ -53,6 +53,9 @@ class HBNBCommand(cmd.Cmd):
             elif method_name == "show":
                 method_args = method_args.strip('\"')
                 return f"show {class_name} {method_args}"
+            elif method_name == "destroy":
+                method_args = method_args.strip('\"')
+                return f"destroy {class_name} {method_args}"
         return line
 
     def do_create(self, args):
