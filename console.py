@@ -48,6 +48,8 @@ class HBNBCommand(cmd.Cmd):
         if class_name and method_name:
             if method_name == "all":
                 return f"all {class_name}"
+            elif method_name == "count":
+                return f"count {class_name}"
         return line
 
     def do_create(self, args):
@@ -126,6 +128,21 @@ class HBNBCommand(cmd.Cmd):
             if not args or key.startswith(args + '.'):
                 obj_list.append(str(objs[key]))
         print(obj_list)
+
+    def do_count(self, args):
+        """
+        Retrieves the number of instance of a class.
+        Usage: count <class name>
+        """
+        if not args:
+            print("** class name missing **")
+            return
+        if args not in self.classes:
+            print("** class doesn't exist **")
+            return
+        objs = storage.all()
+        count = sum(1 for key in objs if key.startswith(args + '.'))
+        print(count)
 
     def do_update(self, args):
         """Update an instance based on class name and id by
