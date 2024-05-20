@@ -224,7 +224,7 @@ class HBNBCommand(cmd.Cmd):
         #     attr_name = attr_tokens[0]
         #     attr_value = attr_tokens[1]
 
-            # convert the attribute value to the correct type
+        # convert the attribute value to the correct type
         if attr_value.isdigit():
             attr_value = int(attr_value)
         elif (attr_value.replace('.', '', 1).isdigit() and
