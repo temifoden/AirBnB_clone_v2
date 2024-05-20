@@ -69,7 +69,7 @@ class HBNBCommand(cmd.Cmd):
                             f"{attr_name_or_dict}"
                         )
                     else:
-                        attr_name, attr_value = attr_name_or_dict(", ")
+                        attr_name, attr_value = attr_name_or_dict.split(", ")
                         attr_name = attr_name.strip('\"')
                         attr_value = attr_value.strip('\"')
                     return (
@@ -213,7 +213,7 @@ class HBNBCommand(cmd.Cmd):
                     attr_value = attr_value.strip('"')
                 setattr(obj, attr_name, attr_value)
         else:
-            attr_tokens = attr_name_or_dict.split()
+            attr_tokens = attr_name_or_dict.split(", ")
             if len(attr_tokens) < 2:
                 print("** value missing **")
                 return
