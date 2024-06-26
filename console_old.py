@@ -82,61 +82,19 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """
-        Create a new instance of BaseModel or any subclass,
+        Create a new instance of BaseModel or User,
         saves it (to the JSON file) and print the Id.
-        Usage: create <class_name> <param1=value1> <param2=value>
+        Usage: create <class_name>
         """
-
-        tokens = args.split()
-
-        if not tokens:
+        if not args:
             print("** class name missing **")
             return
-        if tokens[0] not in self.classes:
+        if args not in self.classes:
             print("** class doesn't exist **")
             return
-        class_name = tokens[0]
-        if class_name not in self.classes:
-            print("** class doesn't exist **")
-            return
-        new_instance = self.classes[class_name]()
-
-        for param in tokens[1:]:
-            key, value = self.parse_parameter(param)
-            if key and value:
-                setattr(new_instance, key, value)
-        new_instance.save()
-        print(new_instance.id)
-    
-    def parse_parameter(self, param):
-        """
-        Parses a parameter and returns a tuple (key, value).
-        Supports string, float, and integer types
-        """
-        if '=' not in param:
-            return None, None
-        key, value = param.split('=', 1)
-
-        # Handle string values
-        if value.startswith('"') and value.endswith('"'):
-            value = value[1:-1].replace('_', ' ').replace('\\"', '"')
-            return key, value
-       
-        # Handle float values
-        try:
-            if '.' in value:
-                value = float(value)
-                return key, value
-        except ValueError:
-            return None, None
-        
-        # Handle integer values
-        try:
-            value = int(value)
-            return key, value
-        except ValueError:
-            return None, None
-        return None, None
+        obj = self.classes[args]()
+        obj.save()
+        print(obj.id)
 
     def do_show(self, args):
         """
