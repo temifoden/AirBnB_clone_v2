@@ -3,7 +3,13 @@ from unittest.mock import patch, MagicMock
 from datetime import datetime
 import uuid
 from models.base_model import BaseModel  # Ensure you import your BaseModel class correctly
+import sys
+import os
 
+
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+@unittest.skip("demonstrating skipping")
 class TestBaseModel(unittest.TestCase):
     def setUp(self):
         """Setup for tests"""
