@@ -107,7 +107,7 @@ class HBNBCommand(cmd.Cmd):
                 setattr(new_instance, key, value)
         new_instance.save()
         print(new_instance.id)
-    
+
     def parse_parameter(self, param):
         """
         Parses a parameter and returns a tuple (key, value).
@@ -121,7 +121,7 @@ class HBNBCommand(cmd.Cmd):
         if value.startswith('"') and value.endswith('"'):
             value = value[1:-1].replace('_', ' ').replace('\\"', '"')
             return key, value
-       
+
         # Handle float values
         try:
             if '.' in value:
@@ -129,7 +129,7 @@ class HBNBCommand(cmd.Cmd):
                 return key, value
         except ValueError:
             return None, None
-        
+
         # Handle integer values
         try:
             value = int(value)
