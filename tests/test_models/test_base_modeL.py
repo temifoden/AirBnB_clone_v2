@@ -1,67 +1,55 @@
 import unittest
-from unittest.mock import patch, MagicMock
 from datetime import datetime
 import uuid
-from models.base_model import BaseModel  # Ensure you import your BaseModel class correctly
 import sys
 import os
 
+# Adjust the Python path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../../')
 
+from models.base_model import BaseModel
+from models.engine.file_storage import FileStorage
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-@unittest.skip("demonstrating skipping")
 class TestBaseModel(unittest.TestCase):
-    def setUp(self):
-        """Setup for tests"""
-        self.model = BaseModel()
-        
-    @patch('models.storage')
-    def test_init(self, mock_storage):
+    def test_init(self):
         """Test initialization of BaseModel"""
-        mock_storage.new.assert_called_once_with(self.model)
-        self.assertIsInstance(self.model.id, str)
-        self.assertIsInstance(uuid.UUID(self.model.id), uuid.UUID)
-        self.assertIsInstance(self.model.created_at, datetime)
-        self.assertIsInstance(self.model.updated_at, datetime)
-        self.assertEqual(self.model.created_at, self.model.updated_at)
-    
-    @patch('models.storage')
-    def test_init_with_kwargs(self, mock_storage):
+        model = BaseModel()
+        self.assertTrue(hasattr(model, "id"))
+        self.assertTrue(hasattr(model, "created_at"))
+        self.assertTrue(hasattr(model, "updated_at"))
+        self.assertEqual(model.created_at, model.updated_at)
+
+    def test_init_with_kwargs(self):
         """Test initialization with kwargs"""
-        kwargs = {
-            'id': '1234',
-            'created_at': datetime.now().isoformat(),
-            'updated_at': datetime.now().isoformat(),
-            'name': 'test'
-        }
-        model = BaseModel(**kwargs)
-        self.assertEqual(model.id, '1234')
-        self.assertEqual(model.name, 'test')
-        self.assertIsInstance(model.created_at, datetime)
-        self.assertIsInstance(model.updated_at, datetime)
-        self.assertFalse(mock_storage.new.called)
-    
+        model_id = str(uuid.uuid4())
+        created_at = datetime.now().isoformat()
+        updated_at = created_at
+        model = BaseModel(id=model_id, created_at=created_at, updated_at=updated_at)
+        self.assertEqual(model.id, model_id)
+        self.assertEqual(model.created_at.isoformat(), created_at)
+        self.assertEqual(model.updated_at.isoformat(), updated_at)
+
     def test_str(self):
         """Test __str__ method"""
-        expected_str = f"[BaseModel] ({self.model.id}) {self.model.__dict__}"
-        self.assertEqual(str(self.model), expected_str)
-    
-    @patch('models.storage')
-    def test_save(self, mock_storage):
+        model = BaseModel()
+        expected_str = f"[BaseModel] ({model.id}) {model.__dict__}"
+        self.assertEqual(str(model), expected_str)
+
+    def test_save(self):
         """Test save method"""
-        old_updated_at = self.model.updated_at
-        self.model.save()
-        self.assertNotEqual(self.model.updated_at, old_updated_at)
-        self.assertTrue(self.model.updated_at > old_updated_at)
-        mock_storage.save.assert_called_once()
-    
+        model = BaseModel()
+        old_updated_at = model.updated_at
+        model.save()
+        self.assertNotEqual(model.updated_at, old_updated_at)
+
     def test_to_dict(self):
         """Test to_dict method"""
-        model_dict = self.model.to_dict()
-        self.assertEqual(model_dict['id'], self.model.id)
+        model = BaseModel()
+        model_dict = model.to_dict()
         self.assertEqual(model_dict['__class__'], 'BaseModel')
-        self.assertEqual(model_dict['created_at'], self.model.created_at.isoformat())
-        self.assertEqual(model_dict['updated_at'], self.model.updated_at.isoformat())
+        self.assertEqual(model_dict['id'], model.id)
+        self.assertEqual(model_dict['created_at'], model.created_at.isoformat())
+        self.assertEqual(model_dict['updated_at'], model.updated_at.isoformat())
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

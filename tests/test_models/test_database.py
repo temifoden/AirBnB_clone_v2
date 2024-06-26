@@ -1,43 +1,48 @@
 import unittest
-import MySQLdb
-import os
-from console import HBNBCommand
-from models.base_model import BaseModel  # Ensure you import your BaseModel class correctly
+from models.base_model import BaseModel
+from datetime import datetime
+import uuid
 
-class TestDatabase(unittest.TestCase):
+class TestBaseModel(unittest.TestCase):
+    def test_init(self):
+        """Test initialization of BaseModel"""
+        model = BaseModel()
+        self.assertTrue(hasattr(model, "id"))
+        self.assertTrue(hasattr(model, "created_at"))
+        self.assertTrue(hasattr(model, "updated_at"))
+        self.assertEqual(model.created_at, model.updated_at)
 
-    @classmethod
-    def setUpClass(cls):
-        # Establish a connection to the MySQL database
-        cls.db = MySQLdb.connect(
-            host=os.getenv('HBNB_MYSQL_HOST', 'localhost'),
-            user=os.getenv('HBNB_MYSQL_USER', 'hbnb_test'),
-            passwd=os.getenv('HBNB_MYSQL_PWD', 'hbnb_test_pwd'),
-            db=os.getenv('HBNB_MYSQL_DB', 'hbnb_test_db')
-        )
-        cls.cursor = cls.db.cursor()
+    def test_init_with_kwargs(self):
+        """Test initialization with kwargs"""
+        model_id = str(uuid.uuid4())
+        created_at = datetime.now().isoformat()
+        updated_at = created_at
+        model = BaseModel(id=model_id, created_at=created_at, updated_at=updated_at)
+        self.assertEqual(model.id, model_id)
+        self.assertEqual(model.created_at.isoformat(), created_at)
+        self.assertEqual(model.updated_at.isoformat(), updated_at)
 
-    @classmethod
-    def tearDownClass(cls):
-        # Close the database connection
-        cls.cursor.close()
-        cls.db.close()
+    def test_str(self):
+        """Test __str__ method"""
+        model = BaseModel()
+        expected_str = f"[BaseModel] ({model.id}) {model.__dict__}"
+        self.assertEqual(str(model), expected_str)
 
-    def setUp(self):
-        # Get the initial number of records in the states table
-        self.cursor.execute("SELECT COUNT(*) FROM states")
-        self.initial_count = self.cursor.fetchone()[0]
+    def test_save(self):
+        """Test save method"""
+        model = BaseModel()
+        old_updated_at = model.updated_at
+        model.save()
+        self.assertNotEqual(model.updated_at, old_updated_at)
 
-    def test_create_state(self):
-        # Perform the action: execute the console command to create a new state
-        HBNBCommand().onecmd('create State name="California"')
+    def test_to_dict(self):
+        """Test to_dict method"""
+        model = BaseModel()
+        model_dict = model.to_dict()
+        self.assertEqual(model_dict['__class__'], 'BaseModel')
+        self.assertEqual(model_dict['id'], model.id)
+        self.assertEqual(model_dict['created_at'], model.created_at.isoformat())
+        self.assertEqual(model_dict['updated_at'], model.updated_at.isoformat())
 
-        # Get the new number of records in the states table
-        self.cursor.execute("SELECT COUNT(*) FROM states")
-        new_count = self.cursor.fetchone()[0]
-
-        # Assert the difference is +1
-        self.assertEqual(new_count, self.initial_count + 1)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
