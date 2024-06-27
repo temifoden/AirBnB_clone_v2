@@ -1,5 +1,5 @@
 -- Drop the user if it exists
-DROP USER IF EXISTS 'hbnb_test'@'localhost'
+DROP USER IF EXISTS 'hbnb_test'@'localhost';
 
 -- Create the database hbnb_dev_db if it doesn't exist
 CREATE DATABASE IF NOT EXISTS hbnb_test_db;
