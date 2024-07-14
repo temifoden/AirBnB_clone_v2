@@ -1,14 +1,16 @@
-# Import Fabric API
+#!/usr/bin/python3
 
+# Import Fabric API
 """
 Fabric script (based on the file 1-pack_web_static.py) that distributes an archive to your web servers
 """
-from fabric.api import local
-from datetime import datetime
 import os
+from datetime import datetime
+from fabric.api import local, runs_once
 
 
 # Define the function 'do_pack'
+@runs_once
 def do_pack():
     """Creates a .tgz archive from the contents of the web_static folder."""
     # Create the 'versions' folder if it doesn't exist
