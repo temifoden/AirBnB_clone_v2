@@ -19,15 +19,16 @@ def do_clean(number=0):
 
     # local cleaning
     archives = sorted(os.listdir("versions"))
-    to_delete = archives[:-number] 
+    to_delete = archives[:-number]
     # [archives.pop() for i in range(number)]
     with lcd("versions"):
         [local("rm ./{}".format(a)) for a in to_delete]
-    
+
     # remote cleaning
     with cd("/data/web_static/releases"):
         archives = run("ls -tr").split()
         archives = [a for a in archives if "web_static_" in a]
-        to_delete = archives[:-number]  # keep the most recent 'number' archives
+        # keep the most recent 'number' archives
+        to_delete = archives[:-number]
         # [archives.pop() for i in range(number)]
         [run("rm -rf ./{}".format(a)) for a in to_delete]
