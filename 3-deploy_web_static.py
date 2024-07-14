@@ -3,7 +3,7 @@
 
 import os
 from datetime import datetime
-from fabric.api import env, local, put, run, lcd, cd
+from fabric.api import env, local, put, run
 
 env.hosts = ["18.234.80.112", "100.25.133.24"]
 
