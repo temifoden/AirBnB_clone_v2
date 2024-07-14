@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """
-Fabric script (based on the file 1-pack_web_static.py) that distributes an archive to your web servers
+Fabric script (based on the file 1-pack_web_static.py) that
+distributes an archive to your web servers
 """
 from fabric.api import env, run, put
 from os.path import exists
@@ -8,7 +9,8 @@ from datetime import datetime
 
 env.hosts = ['<IP web-01>', '<IP web-02>']  # Update with your web server IPs
 env.user = 'ubuntu'  # Update with your SSH username
-env.key_filename = '~/.ssh/<your_private_key>'  # Update with the path to your private SSH key
+# Update with the path to your private SSH key
+env.key_filename = '~/.ssh/<your_private_key>'
 
 
 def do_deploy(archive_path):
@@ -22,7 +24,8 @@ def do_deploy(archive_path):
         # Upload the archive to /tmp/ directory on the web server
         put(archive_path, '/tmp/')
 
-        # Extract the archive to /data/web_static/releases/<archive filename without extension>/
+        # Extract the archive to /data/web_static/releases/<archive
+        # filename without extension>/
         archive_filename = archive_path.split('/')[-1]
         archive_no_ext = archive_filename.split('.')[0]
         releases_path = "/data/web_static/releases/{}/".format(archive_no_ext)
