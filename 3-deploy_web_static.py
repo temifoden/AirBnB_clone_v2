@@ -54,7 +54,8 @@ def do_deploy(archive_path):
         # Move the content out of the web_static folder
         run("mv /data/web_static/releases/{}/web_static/* "
             "/data/web_static/releases/{}/".format(foldername, foldername))
-        run("rm -rf /data/web_static/releases/{}/web_static".format(foldername))
+        run("rm -rf /data/web_static/releases/{}/web_static".
+            format(foldername))
 
         # Delete the symbolic link /data/web_static/current from the web server
         run("rm -rf /data/web_static/current")
